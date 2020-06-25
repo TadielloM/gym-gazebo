@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <scene>
+      <ambient>0.25 0.25 0.25 1</ambient>
+      <background>171 205 239 1</background>
+      <shadows>false</shadows>
+    </scene>
+    <gravity>0 0 -9.81</gravity>
+
+        <!--<include>
+            <uri>model://ground_plane</uri>
+        </include>-->
+        <include>
+            <uri>model://sun</uri>
+        </include>
+        <include>
+          <name>mine</name>
+          <uri>model://mine_vertical</uri>
+          <pose>0 0 0  1.58 0 0</pose>
+        </include>
+        
+    </world>
+</sdf>

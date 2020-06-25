@@ -160,3 +160,9 @@ register(
     id='RealMARA3DoF-v0',
     entry_point='gym_gazebo.envs.MARA:RealModularMara3DOFv0Env',
 )
+
+# SlamExploration envs
+register(
+    id='GazeboSlamExploration-v0',
+    entry_point='gym_gazebo.envs.slam_exploration:GazeboSlamExploration-v0',
+)
