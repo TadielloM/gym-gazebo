@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<sdf version='1.6'>
+  <model name='VLP-16'>
+    <link name='velodyne_base_link'>
+      <pose>0 0 0 0 -0 0</pose>    <!-- 0 0 1 0 -0 0--> 
+      <inertial>
+        <pose>0 0 0.03585 0 -0 0</pose>     <!-- 0 0 0.035872 0 -0 0-->
+        <mass>0.05</mass>       <!-- 0.05 0.84 -->
+        <inertia>
+          <ixx>1e-05</ixx>    <!-- 1e-05 0.000908193-->
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-05</iyy>    <!-- 1e-05 0.000908193 -->
+          <iyz>0</iyz>
+          <izz>1e-05</izz>     <!-- 1e-05 0.00110506 -->
+        </inertia>
+      </inertial>
+      <collision name='velodyne_base_link_collision'>     
+        <pose frame=''>0 0 0.03585 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.0717</length>
+            <radius>0.0516</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='velodyne_base_link_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://VLP-16/meshes/VLP16_base_1.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <visual name='velodyne_base_link_visual_1'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://VLP-16/meshes/VLP16_base_2.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <visual name='velodyne_base_link_fixed_joint_lump__velodyne_visual_2'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://VLP-16/meshes/VLP16_scan.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>__default__</uri>
+            <name>__default__</name>
+          </script>
+        </material>
+      </visual>
+      <gravity>0</gravity>      <!-- 0 -->
+      <velocity_decay/>         <!-- non c'e -->
+      <sensor name='velodyne-VLP16' type='ray'>
+        <visualize>0</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>440</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>16</samples>
+              <resolution>1</resolution>
+              <min_angle>-0.261799</min_angle>
+              <max_angle>0.261799</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.3</min>
+            <max>131</max>
+            <resolution>0.001</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0</stddev>
+          </noise>
+        </ray>
+        <plugin name='gazebo_ros_laser_controller' filename='libgazebo_ros_velodyne_laser.so'>
+          <topicName>/velodyne_points</topicName>
+          <frameName>velodyne_base</frameName>
+          <min_range>0.9</min_range>
+          <max_range>65.0</max_range> <!--1300.0-->
+          <gaussianNoise>0.008</gaussianNoise>
+        </plugin>
+        <pose>0 0 0.0377 0 -0 0</pose>
+      </sensor>
+
+            <!-- <self_collide>0</self_collide>
+                 <kinematic>0</kinematic> -->
+
+    </link>
+  </model>
+</sdf>

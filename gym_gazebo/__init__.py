@@ -166,3 +166,8 @@ register(
     id='GazeboSlamExploration-v0',
     entry_point='gym_gazebo.envs.slam_exploration:GazeboSlamExplorationEnv',
 )
+
+register(
+    id='TestGazeboSlamExploration-v0',
+    entry_point='gym_gazebo.envs.slam_exploration:TestGazeboSlamExplorationEnv',
+)

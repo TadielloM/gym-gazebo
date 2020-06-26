@@ -57,7 +57,6 @@ class GazeboEnv(gym.Env):
 
         # Launch the simulation with the given launchfile name
         rospy.init_node('gym', anonymous=True)
-
         ################################################################################################################
         # r = rospy.Rate(1)
         # self.clock_sub = rospy.Subscriber('/clock', Clock, self.callback, queue_size=1000000)
@@ -117,6 +116,27 @@ class GazeboEnv(gym.Env):
             self.gzclient_pid = 0
 
     def _close(self):
+
+        # Kill gzclient, gzserver and roscore
+        tmp = os.popen("ps -Af").read()
+        gzclient_count = tmp.count('gzclient')
+        gzserver_count = tmp.count('gzserver')
+        roscore_count = tmp.count('roscore')
+        rosmaster_count = tmp.count('rosmaster')
+
+        if gzclient_count > 0:
+            os.system("killall -9 gzclient")
+        if gzserver_count > 0:
+            os.system("killall -9 gzserver")
+        if rosmaster_count > 0:
+            os.system("killall -9 rosmaster")
+        if roscore_count > 0:
+            os.system("killall -9 roscore")
+
+        if (gzclient_count or gzserver_count or roscore_count or rosmaster_count >0):
+            os.wait()
+
+    def close(self):
 
         # Kill gzclient, gzserver and roscore
         tmp = os.popen("ps -Af").read()

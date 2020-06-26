@@ -7,7 +7,6 @@
       <shadows>false</shadows>
     </scene>
     <gravity>0 0 -9.81</gravity>
-
         <!--<include>
             <uri>model://ground_plane</uri>
         </include>-->
@@ -17,7 +16,7 @@
         <include>
           <name>mine</name>
           <uri>model://mine</uri>
-          <pose>0 0 0  0 0 0</pose>
+          <pose>0 0 0  0 0 34</pose>
         </include>
         
     </world>

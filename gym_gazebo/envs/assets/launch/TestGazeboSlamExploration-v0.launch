@@ -7,20 +7,17 @@
 
 
     <!-- vehicle pose -->
-    <arg name="x" default="-10"/>
-    <arg name="y" default="-5"/>
-    <arg name="z" default="0"/>
-    <!-- <arg name="x" default="-33"/>
-    <arg name="y" default="-67"/>
-    <arg name="z" default="7.9"/> -->
+    <arg name="x" default="-5"/>
+    <arg name="y" default="3"/>
+    <arg name="z" default="-3"/>
     <arg name="R" default="0"/>
     <arg name="P" default="0"/>
-    <arg name="Y" default="0"/>
+    <arg name="Y" default="-2"/>
     <!-- vehicle model and world -->
     <arg name="vehicle" default="drone_velodyne"/>
     <arg name="world" default="$(env GYM_GAZEBO_WORLD_MINE)"/>
-    <env name="GAZEBO_MODEL_PATH" value="$(env GAZEBO_MODEL_PATH):$(env HOME)/gym-gazebo/gym_gazebo/envs/assets/models"/>
-    <arg name="sdf" default="$(env HOME)/gym-gazebo/gym_gazebo/envs/assets/models/$(arg vehicle)/model.sdf"/>
+    <env name="GAZEBO_MODEL_PATH" value="$(env GAZEBO_MODEL_PATH):/root/gym-gazebo/gym_gazebo/envs/assets/models"/>
+    <arg name="sdf" default="/root/gym-gazebo/gym_gazebo/envs/assets/models/$(arg vehicle)/model.sdf"/>
     <!-- gazebo configs -->
     <arg name="gui" default="false"/>
     <arg name="verbose" default="false"/>
@@ -38,22 +35,22 @@
     <!-- gazebo model -->
     <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen" args="-sdf -file $(arg sdf) -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
     <!-- frames and transformer launch -->
+    <!-- <node pkg="simple_moviment" type="transformer_map_node" name="transformer_map" output="screen" /> -->
     <node pkg="simple_movement" type="transformer.py" name="transformer" output="screen" />
     <node pkg="map_pcl" type="map_pcl_node" name="map_pcl_node" output="screen"/>
-
     <!--Launching octomap server-->
+
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
-        <param name="resolution" value="0.2" />
+        <param name="resolution" value="0.1" />
          <param name="publish_free_space" value="true" /> 
   
          <!-- fixed map frame (set to 'map' if SLAM or localization running!)  -->
          <param name="frame_id" type="string" value="map" /> 
   
          <!-- maximum range to integrate (speedup!)  -->
-         <param name="sensor_model/max_range" value="65.0" /> 
+         <param name="sensor_model/max_range" value="10.0" /> 
   
-         <remap from="cloud_in" to="/velodyne_points_transformed" /> 
+         <remap from="cloud_in" to="/velodyne_points" /> 
      </node>
-
 
 </launch>

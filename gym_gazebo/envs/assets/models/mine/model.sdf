@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="mine">
+      <pose frame=''>0 0 0  0 0 0</pose>
+      <static>true</static>
+      <link name="body">
+        <collision name="body_collision">
+          <geometry>
+            <mesh>
+              <uri>model://mine/meshes/Old_mine.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh> 
+          </geometry>
+        </collision>
+        <visual name="body_visual">
+          <geometry>
+           <!-- <box>
+              <size>77 158  26</size>
+            </box>-->
+            <mesh>
+              <uri>model://mine/meshes/Old_mine.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Motorway</name>
+          </script>
+          <ambient>1 1 1 1</ambient>
+        </material>
+        </visual>
+      </link>
+      <static>1</static>
+    </model>
+</sdf>

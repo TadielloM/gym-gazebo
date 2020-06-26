@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 import gym
+from gym import wrappers
+# from gym.wrappers.monitoring import monitoring
 import gym_gazebo
 import time
-import numpy
+import numpy as np
 import time
 import pandas
 
 import qlearn
+import liveplot
 
 def render():
     render_skip = 0 #Skip first X episodes.
@@ -18,12 +21,6 @@ def render():
     elif ((x-render_episodes)%render_interval == 0) and (x != 0) and (x > render_skip) and (render_episodes < x):
         env.render(close=True)
 
-# def build_state(features):    
-#     return int("".join(map(lambda feature: str(int(feature)), features)))
-
-# def to_bin(value, bins):
-#     return numpy.digitize(x=[value], bins=bins)[0]
-
 if __name__ == '__main__':
 
     env = gym.make('GazeboSlamExploration-v0')
@@ -31,36 +28,33 @@ if __name__ == '__main__':
     outdir = '/tmp/gazebo_gym_experiments'
     env = gym.wrappers.Monitor(env, outdir, force=True)
     plotter = liveplot.LivePlot(outdir)
-
-    last_time_steps = numpy.ndarray(0)
+    last_time_steps = np.ndarray(0)
     max_number_of_steps = 1000
 
     qlearn = qlearn.QLearn(actions=range(env.action_space.n),
-                    alpha=0.1, gamma=0.9, epsilon=0.9)
+                     alpha=0.1, gamma=0.9, epsilon=0.9)
 
     initial_epsilon = qlearn.epsilon
 
     epsilon_discount = 0.9988
 
     start_time = time.time()
-    total_episodes = 10000
+    total_episodes = 100
     highest_reward = 0
 
     for x in range(total_episodes):
         done = False
 
-        cumulated_reward = 0 #Should going forward give more reward then L/R ?
-
+        cumulated_reward = 0
+        
         observation = env.reset()
-        latitude, longitude = observation
-
-        state = None
+        print(observation.shape)
+        state = ''.join(map(str,observation))
 
         if qlearn.epsilon > 0.05:
             qlearn.epsilon *= epsilon_discount
 
-        #render() #defined above, not env.render()     
-
+        # render() #defined above, not env.render()     
         for i in range(max_number_of_steps):
 
             # Pick an action based on the current state
@@ -73,19 +67,17 @@ if __name__ == '__main__':
             if highest_reward < cumulated_reward:
                 highest_reward = cumulated_reward
 
-            latitude, logitude = observation
-            nextState = None
+            nextState = ''.join(map(str,observation))
 
             qlearn.learn(state, action, reward, nextState)
             if not(done):
                 state = nextState
             else:
-                last_time_steps = numpy.append(last_time_steps, [int(i + 1)])
+                last_time_steps = np.append(last_time_steps, [int(i + 1)])
                 break 
 
-        if x%100==0:
-            plotter.plot()
-
+        # if x%1==0:
+        # plotter.plot()
         m, s = divmod(int(time.time() - start_time), 60)
         h, m = divmod(m, 60)
         print ("EP: "+str(x+1)+" - [alpha: "+str(round(qlearn.alpha,2))+" - gamma: "+str(round(qlearn.gamma,2))+" - epsilon: "+str(round(qlearn.epsilon,2))+"] - Reward: "+str(cumulated_reward)+"     Time: %d:%02d:%02d" % (h, m, s))
