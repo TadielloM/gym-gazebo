@@ -1,0 +1,1 @@
+from gym_gazebo.envs.slam_exploration.gazebo_slam_exploration import GazeboSlamExplorationEnv

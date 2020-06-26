@@ -12,7 +12,7 @@ from gym_gazebo.envs import gazebo_env
 from gym.utils import seeding
 
 
-class GazeboExploration(gazebo_env.GazeboEnv):
+class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
 
     def _pause(self, msg):
         programPause = raw_input(str(msg))
@@ -22,7 +22,7 @@ class GazeboExploration(gazebo_env.GazeboEnv):
         # Launch the simulation with the given launchfile name
         gazebo_env.GazeboEnv.__init__(self, "GazeboSlamExploration-v0.launch")
 
-        self.action_space = spaces.Discrete(26) # F, L, R, B
+        self.action_space = spaces.Discrete(26)
         #self.observation_space = spaces.Box(low=0, high=20) #laser values
         self.reward_range = (-np.inf, np.inf)
 
