@@ -22,6 +22,9 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         # Launch the simulation with the given launchfile name
         gazebo_env.GazeboEnv.__init__(self, "GazeboSlamExploration-v0.launch")
 
+        print("Arrivo qua")
+
+
         self.action_space = spaces.Discrete(26)
         #self.observation_space = spaces.Box(low=0, high=20) #laser values
         self.reward_range = (-np.inf, np.inf)
@@ -37,6 +40,7 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
 
         self.max_distance = 1.6
 
+        
         self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_world', Empty)
 
 

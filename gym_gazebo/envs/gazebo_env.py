@@ -57,7 +57,6 @@ class GazeboEnv(gym.Env):
 
         # Launch the simulation with the given launchfile name
         rospy.init_node('gym', anonymous=True)
-
         ################################################################################################################
         # r = rospy.Rate(1)
         # self.clock_sub = rospy.Subscriber('/clock', Clock, self.callback, queue_size=1000000)
