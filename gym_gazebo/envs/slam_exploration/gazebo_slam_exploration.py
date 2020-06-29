@@ -50,7 +50,9 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
             countdown-=1
             time.sleep(1)
 
+        print("Arrivo qua 2")        
         self._seed()
+
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -70,7 +72,7 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         # R = Right
         # Combinations of thes basic direction can be used. Example: FUR -> Means the upper, right corner going forward of the 3x3 box
         # Starting from the Up and going in anticlock versus
-
+        print("Arrivo qua 3")
         #Front Line
         if action == 0: #FORWARD
             print("Going Forward")
@@ -131,18 +133,18 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         
         # Send /set_position message and wait till the point is not reached
 
-
+        print("Arrivo qua 4")
         observation = self._get_state()
-
+        print("Arrivo qua 5")
         dist = self.center_distance()
         done = dist > self.max_distance
-
+        print("Arrivo qua 6")
         reward = 0
         if done:
             reward = -100
         else:
             reward = 10 - dist * 8
-
+        print("Arrivo qua 7")
         return observation, reward, done, {}
 
 
