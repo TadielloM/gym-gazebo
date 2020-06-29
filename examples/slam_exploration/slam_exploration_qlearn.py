@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import gym
+from gym import wrappers
 import gym_gazebo
 import time
 import numpy
@@ -7,6 +8,8 @@ import time
 import pandas
 
 import qlearn
+import liveplot
+
 
 def render():
     render_skip = 0 #Skip first X episodes.
@@ -30,7 +33,7 @@ if __name__ == '__main__':
 
     outdir = '/tmp/gazebo_gym_experiments'
     env = gym.wrappers.Monitor(env, outdir, force=True)
-    plotter = liveplot.LivePlot(outdir)
+    # plotter = liveplot.LivePlot(outdir)
 
     last_time_steps = numpy.ndarray(0)
     max_number_of_steps = 1000
@@ -83,8 +86,8 @@ if __name__ == '__main__':
                 last_time_steps = numpy.append(last_time_steps, [int(i + 1)])
                 break 
 
-        if x%100==0:
-            plotter.plot()
+        # if x%100==0:
+        #     plotter.plot()
 
         m, s = divmod(int(time.time() - start_time), 60)
         h, m = divmod(m, 60)

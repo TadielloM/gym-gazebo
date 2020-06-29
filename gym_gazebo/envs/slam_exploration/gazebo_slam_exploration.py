@@ -10,6 +10,7 @@ import math
 from gym import utils, spaces
 from gym_gazebo.envs import gazebo_env
 from gym.utils import seeding
+from std_srvs.srv import Empty
 
 
 class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
