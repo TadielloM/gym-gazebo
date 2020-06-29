@@ -19,7 +19,7 @@
     <env name="GAZEBO_MODEL_PATH" value="$(env GAZEBO_MODEL_PATH):/root/gym-gazebo/gym_gazebo/envs/assets/models"/>
     <arg name="sdf" default="/root/gym-gazebo/gym_gazebo/envs/assets/models/$(arg vehicle)/model.sdf"/>
     <!-- gazebo configs -->
-    <arg name="gui" default="true"/>
+    <arg name="gui" default="false"/>
     <arg name="verbose" default="false"/>
     <arg name="paused" default="false"/>
     <arg name="respawn_gazebo" default="false"/>

@@ -23,9 +23,6 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         # Launch the simulation with the given launchfile name
         gazebo_env.GazeboEnv.__init__(self, "GazeboSlamExploration-v0.launch")
 
-        print("Arrivo qua")
-
-
         self.action_space = spaces.Discrete(26)
         #self.observation_space = spaces.Box(low=0, high=20) #laser values
         self.reward_range = (-np.inf, np.inf)
@@ -39,19 +36,19 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         self.diff_latitude = None
         self.diff_longitude = None
 
-        self.max_distance = 1.6
+        self.max_distance = 0
 
         
         self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_world', Empty)
 
 
-        countdown = 10
+
+        countdown = 7
         while countdown > 0:
             print ("Taking off in in %ds"%countdown)
             countdown-=1
             time.sleep(1)
 
-        print("Arrivo qua 2")        
         self._seed()
 
 
@@ -73,7 +70,6 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         # R = Right
         # Combinations of thes basic direction can be used. Example: FUR -> Means the upper, right corner going forward of the 3x3 box
         # Starting from the Up and going in anticlock versus
-        print("Arrivo qua 3")
         #Front Line
         if action == 0: #FORWARD
             print("Going Forward")
@@ -134,18 +130,15 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         
         # Send /set_position message and wait till the point is not reached
 
-        print("Arrivo qua 4")
         observation = self._get_state()
-        print("Arrivo qua 5")
         dist = self.center_distance()
-        done = dist > self.max_distance
-        print("Arrivo qua 6")
+        done = dist >= self.max_distance
         reward = 0
+
         if done:
             reward = -100
         else:
             reward = 10 - dist * 8
-        print("Arrivo qua 7")
         return observation, reward, done, {}
 
 
@@ -185,12 +178,16 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
 
     def reset(self):
         # Resets the state of the environment and returns an initial observation.
+        print("CIAAOOOOOOOO")
         rospy.wait_for_service('/gazebo/reset_world')
+        print("CIAAOOOOOOOO")
+
         try:
             #reset_proxy.call()
             self.reset_proxy()
         except (rospy.ServiceException) as e:
             print ("/gazebo/reset_world service call failed")
+        print("CIAAOOOOOOOO")
 
         # Restart octomap
 
