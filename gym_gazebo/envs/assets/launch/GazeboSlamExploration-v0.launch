@@ -14,14 +14,13 @@
     <arg name="P" default="0"/>
     <arg name="Y" default="0"/>
     <!-- vehicle model and world -->
-    <!-- <arg name="vehicle" default="drone_velodyne"/> -->
+    <arg name="vehicle" default="drone_velodyne"/>
     <arg name="world" default="$(env GYM_GAZEBO_WORLD_MINE)"/>
-    <!-- <env name="GAZEBO_MODEL_PATH" value="$(env GAZEBO_MODEL_PATH):$(find gym-gazebo)/gym_gazebo/envs/assets/models"/> -->
-    <!-- <arg name="sdf" default="$(find gym-gazebo)/gym_gazebo/envs/assets/models/$(arg vehicle)/model.sdf"/> -->
+    <env name="GAZEBO_MODEL_PATH" value="$(env GAZEBO_MODEL_PATH):/root/gym-gazebo/gym_gazebo/envs/assets/models"/>
+    <arg name="sdf" default="/root/gym-gazebo/gym_gazebo/envs/assets/models/$(arg vehicle)/model.sdf"/>
     <!-- gazebo configs -->
     <arg name="gui" default="true"/>
-    <arg name="debug" default="true"/>
-    <arg name="verbose" default="true"/>
+    <arg name="verbose" default="false"/>
     <arg name="paused" default="false"/>
     <arg name="respawn_gazebo" default="false"/>
     <!-- Gazebo sim -->
@@ -29,13 +28,12 @@
         <!-- <arg name="use_sim_time" value="true"/> -->
         <arg name="gui" value="$(arg gui)"/>
         <arg name="world_name" value="$(arg world)"/>
-        <arg name="debug" value="$(arg debug)"/>
         <arg name="verbose" value="$(arg verbose)"/>
         <arg name="paused" value="$(arg paused)"/>
         <arg name="respawn_gazebo" value="$(arg respawn_gazebo)"/>
     </include>
     <!-- gazebo model -->
-    <!-- <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen" args="-sdf -file $(arg sdf) -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/> -->
+    <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen" args="-sdf -file $(arg sdf) -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
     <!-- frames and transformer launch -->
     <!-- <node pkg="tf" type="static_transform_publisher" name="map_broadcaster" args="0 0 0 0 0 0 1 map base_link 100" /> -->
     <!-- <node pkg="simple_uav_gazebo" type="transformer_map_node" name="transformer_map" output="screen" /> -->
