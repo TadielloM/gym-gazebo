@@ -17,8 +17,8 @@ This work presents an extension of the initial OpenAI gym for robotics using ROS
   year={2016}
 }
 ```
-
 -----
+
 
 **`gym-gazebo` is a complex piece of software for roboticists that puts together simulation tools, robot middlewares (ROS, ROS 2), machine learning and reinforcement learning techniques. All together to create an environment whereto benchmark and develop behaviors with robots. Setting up `gym-gazebo` appropriately requires relevant familiarity with these tools.**
 
