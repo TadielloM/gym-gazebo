@@ -12,11 +12,18 @@ from gym_gazebo.envs import gazebo_env
 from gym.utils import seeding
 from std_srvs.srv import Empty
 
+import actionlib
+from simple_movement.msg import FlyToAction, FlyToGoal
+from geometry_msgs.msg import PoseStamped, Pose
+
 
 class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
 
     def _pause(self, msg):
         programPause = raw_input(str(msg))
+
+    def position_callback(self, data):
+        self.position = data.pose
 
     def __init__(self):
 
@@ -24,7 +31,7 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         gazebo_env.GazeboEnv.__init__(self, "GazeboSlamExploration-v0.launch")
 
         self.action_space = spaces.Discrete(26)
-        #self.observation_space = spaces.Box(low=0, high=20) #laser values
+        # self.observation_space = spaces.Box(low=0, high=20) #laser values
         self.reward_range = (-np.inf, np.inf)
 
         self.initial_latitude = None
@@ -38,19 +45,24 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
 
         self.max_distance = 0
 
-        
         self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_world', Empty)
 
+        # Defining client for Fly to position
+        self.client = actionlib.SimpleActionClient('fly_to', FlyToAction)
+        self.client.wait_for_server()
 
+        self.position = Pose()
+        # Subscribing to the position of the drone
+        rospy.Subscriber("/position_drone", PoseStamped,
+                         self.position_callback)
 
-        countdown = 7
-        while countdown > 0:
-            print ("Taking off in in %ds"%countdown)
-            countdown-=1
-            time.sleep(1)
+        # countdown = 3
+        # while countdown > 0:
+        #     print("Taking off in in %ds" % countdown)
+        #     countdown -= 1
+        #     time.sleep(1)
 
         self._seed()
-
 
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -70,85 +82,168 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         # R = Right
         # Combinations of thes basic direction can be used. Example: FUR -> Means the upper, right corner going forward of the 3x3 box
         # Starting from the Up and going in anticlock versus
-        #Front Line
-        if action == 0: #FORWARD
+        # Front Line
+
+        goal = FlyToGoal()
+
+        goal.pose = PoseStamped()
+        goal.distance_converged = 0.3
+        goal.yaw_converged = 1
+        
+        if action == 0:  # FORWARD 
             print("Going Forward")
-        elif action == 1: #FU
+            goal.pose.pose.position.x = self.position.position.x+1
+        elif action == 1:  # FU
             print("Going FU")
-        elif action == 2: #FUL
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.z = self.position.position.z+1
+        elif action == 2:  # FUL
             print("Going FUL")
-        elif action == 3: #FL
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.z = self.position.position.z+1
+            goal.pose.pose.position.y = self.position.position.y-1
+        elif action == 3:  # FL
             print("Going FL")
-        elif action == 4: #FDL
-            print("Going FU")
-        elif action == 5: #FD
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 4:  # FDL
+            print("Going FDL")
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.z = self.position.position.z-1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 5:  # FD
             print("Going FD")
-        elif action == 6: #FDR
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.z = self.position.position.z-1
+
+        elif action == 6:  # FDR
             print("Going FDR")
-        elif action == 7: #FR
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.z = self.position.position.z-1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+        elif action == 7:  # FR
             print("Going FR")
-        elif action == 8: #FUR
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+        elif action == 8:  # FUR
             print("Going FUR")
-        #Central line
-        
-        elif action == 9: #U
+            goal.pose.pose.position.x = self.position.position.x+1
+            goal.pose.pose.position.z = self.position.position.z+1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+
+        # Central line
+        elif action == 9:  # U
             print("Going U")
-        elif action == 10: #UL
+            goal.pose.pose.position.z = self.position.position.z+1
+
+        elif action == 10:  # UL
             print("Going UL")
-        elif action == 11: #L
+            goal.pose.pose.position.z = self.position.position.z+1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 11:  # L
             print("Going L")
-        elif action == 12: #DL
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 12:  # DL
             print("Going DL")
-        elif action == 13: #D
+            goal.pose.pose.position.z = self.position.position.z-1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 13:  # D
             print("Going D")
-        elif action == 14: #DR
+            goal.pose.pose.position.z = self.position.position.z-1
+
+        elif action == 14:  # DR
             print("Going DR")
-        elif action == 15: #R
+            goal.pose.pose.position.z = self.position.position.z-1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+        elif action == 15:  # R
             print("Going R")
-        elif action == 16: #UR
+            goal.pose.pose.position.y = self.position.position.y+1
+
+        elif action == 16:  # UR
             print("Going UR")
-        
-        #Back line 
-        elif action == 17: #B
+            goal.pose.pose.position.z = self.position.position.z+1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+
+        # Back line
+        elif action == 17:  # B
             print("Going B")
-        elif action == 18: #BU
+            goal.pose.pose.position.x = self.position.position.x-1
+
+        elif action == 18:  # BU
             print("Going BU")
-        elif action == 19: #BUL
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.z = self.position.position.z+1
+
+        elif action == 19:  # BUL
             print("Going BUL")
-        elif action == 20: #BL
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.z = self.position.position.z+1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 20:  # BL
             print("Going BL")
-        elif action == 21: #BDL
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 21:  # BDL
             print("Going BDL")
-        elif action == 22: #BD
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.z = self.position.position.z-1
+            goal.pose.pose.position.y = self.position.position.y-1
+
+        elif action == 22:  # BD
             print("Going BD")
-        elif action == 23: #BDR
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.z = self.position.position.z-1
+
+        elif action == 23:  # BDR
             print("Going BDR")
-        elif action == 24: #BR
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.z = self.position.position.z-1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+        elif action == 24:  # BR
             print("Going BR")
-        elif action == 25: #BUR
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.y = self.position.position.y+1
+
+        elif action == 25:  # BUR
             print("Going BUR")
-        
+            goal.pose.pose.position.x = self.position.position.x-1
+            goal.pose.pose.position.z = self.position.position.z+1
+            goal.pose.pose.position.y = self.position.position.y+1
+
         # Send /set_position message and wait till the point is not reached
+        self.client.send_goal(goal)
+        self.client.wait_for_result()
 
         observation = self._get_state()
-        dist = self.center_distance()
-        done = dist >= self.max_distance
+        done = self.position.position.x >= 10
         reward = 0
 
         if done:
-            reward = -100
+            reward = 100
         else:
-            reward = 10 - dist * 8
+            reward = self.position.position.x -1
         return observation, reward, done, {}
 
-
     def _killall(self, process_name):
-        pids = subprocess.check_output(["pidof",process_name]).split()
+        pids = subprocess.check_output(["pidof", process_name]).split()
         for pid in pids:
             os.system("kill -9 "+str(pid))
 
-    def _get_state(self): # Get position and map 
-        #read position data
+    def _get_state(self):  # Get position and map
+        # read position data
         data = None
         # while data is None:
         #     try:
@@ -156,42 +251,22 @@ class GazeboSlamExplorationEnv(gazebo_env.GazeboEnv):
         #     except:
         #         pass
 
-        self.current_latitude = 0
-        self.current_longitude = 0
-
-        if self.initial_latitude == None and self.initial_longitude == None:
-            self.initial_latitude = self.current_latitude
-            self.initial_longitude = self.current_longitude
-            print("Initial latitude : %f, Initial Longitude : %f" % (self.initial_latitude,self.initial_longitude,))
-
-        print("Current latitude : %f, Current Longitude : %f" % (self.current_latitude,self.current_longitude,))
-
-        self.diff_latitude = self.current_latitude - self.initial_latitude
-        self.diff_longitude = self.current_longitude - self.initial_longitude
-
-        print("Diff latitude: %f, Diff Longitude: %f" % (self.diff_latitude,self.diff_longitude,))
-
-        return self.diff_latitude, self.diff_longitude
-
-    def center_distance(self):
-        return math.sqrt(self.diff_latitude**2 + self.diff_longitude**2)
+        return self.position
 
     def reset(self):
         # Resets the state of the environment and returns an initial observation.
-        print("CIAAOOOOOOOO")
         rospy.wait_for_service('/gazebo/reset_world')
-        print("CIAAOOOOOOOO")
 
         try:
-            #reset_proxy.call()
+            # reset_proxy.call()
             self.reset_proxy()
         except (rospy.ServiceException) as e:
-            print ("/gazebo/reset_world service call failed")
-        print("CIAAOOOOOOOO")
+            print("/gazebo/reset_world service call failed")
 
         # Restart octomap
 
         self.initial_latitude = None
         self.initial_longitude = None
+        
 
         return self._get_state()

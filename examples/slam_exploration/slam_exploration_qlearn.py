@@ -46,7 +46,7 @@ if __name__ == '__main__':
     epsilon_discount = 0.9988
 
     start_time = time.time()
-    total_episodes = 1000000
+    total_episodes = 100
     highest_reward = 0
 
     for x in range(total_episodes):
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         cumulated_reward = 0 #Should going forward give more reward then L/R ?
 
         observation = env.reset()
-        latitude, longitude = observation
+        position = observation
 
         state = None
 
@@ -76,7 +76,7 @@ if __name__ == '__main__':
             if highest_reward < cumulated_reward:
                 highest_reward = cumulated_reward
 
-            latitude, logitude = observation
+            position = observation
             nextState = None
 
             qlearn.learn(state, action, reward, nextState)
