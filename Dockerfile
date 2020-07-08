@@ -52,7 +52,7 @@ RUN mkdir -p ~/ros_ws/src
 RUN cd ~/ros_ws/src && git clone https://github.com/OctoMap/octomap_mapping.git
 RUN cd ~/ros_ws/src && git clone https://bitbucket.org/DataspeedInc/velodyne_simulator.git
 RUN cd ~/ros_ws/src && git clone https://TadielloM:Mass21effect@github.com/Moes96/servo_pkg.git
-RUN cd ~/ros_ws/src && git clone https://github.com/TadielloM/simple_movement.git
+RUN cd ~/ros_ws/src && git clone --single-branch --branch movement_as_service https://github.com/TadielloM/simple_movement.git
 RUN cd ~/ros_ws/ && /bin/bash -c "source /opt/ros/melodic/setup.bash && catkin_make"
 RUN echo "source /root/ros_ws/devel/setup.bash" >> /root/.bashrc
 RUN echo "alias killgazebogym='killall -9 rosout roslaunch rosmaster gzserver nodelet robot_state_publisher gzclient'" >> /root/.bashrc
