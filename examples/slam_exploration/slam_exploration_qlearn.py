@@ -53,9 +53,14 @@ if __name__ == '__main__':
         done = False
 
         cumulated_reward = 0 #Should going forward give more reward then L/R ?
-
-        observation = env.reset()
+        
+        observation,octomap_resetted = env.reset()
+        while(not octomap_resetted):
+            observation,octomap_resetted = env.reset()
+            
+        
         position = observation
+        print("CAZZO 2")
 
         state = None
 

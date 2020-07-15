@@ -36,13 +36,15 @@ RUN apt-get install -y \
     ros-melodic-pcl-ros \
     ros-melodic-navigation \
     ros-melodic-sophus \
+    ros-melodic-ros-numpy \
+    libdynamicedt3d-dev \ 
     gfortran \
     python-skimage \
     psmisc \
     python-tk \
     htop
 
-RUN pip install --upgrade gym h5py tensorflow-gpu keras pandas liveplot pydot pyparsing scikit-image==0.14.2
+RUN pip install --upgrade gym h5py tensorflow-gpu keras pandas liveplot pydot pyparsing scikit-image==0.14.2 octomap-python
 
 #For Deep Q learning
 RUN cd ~ && git clone git://github.com/Theano/Theano.git
@@ -64,3 +66,7 @@ VOLUME [ "/root/gym-gazebo" ]
 # RUN pip install -e ~/gym-gazebo
 # RUN cd ~/gym-gazebo/gym_gazebo/envs/installation && bash setup_melodic.bash 
 # RUN cd ~/gym-gazebo/gym_gazebo/envs/installation && bash drone_velodyne_setup.bash 
+
+RUN cd /root/gym-gazebo/gym_gazebo/envs/slam_exploration/libraries && swig -python -c++ conversions.i
+RUN cd /root/gym-gazebo/gym_gazebo/envs/slam_exploration/libraries && g++ -c -Wall -fpic conversions_wrap.cxx -I/usr/include/python2.7 -I/opt/ros/melodic/include/
+RUN cd /root/gym-gazebo/gym_gazebo/envs/slam_exploration/libraries && g++ -shared conversions_wrap.o -L/opt/ros/melodic/lib -loctomap -lm -o _conversions.so
