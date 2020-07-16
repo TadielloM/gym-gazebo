@@ -15,8 +15,8 @@
 
 %typemap(in) const octomap_msgs::Octomap& {
     // $1->header.seq = 213; 
-    PyTypeObject* type = $input->ob_type;
-    const char* p = type->tp_name;
+    // PyTypeObject* type = $input->ob_type;
+    // const char* p = type->tp_name;
     // std::cout << p <<std::endl;
     // std::string x = PyObject_HasAttrString($input, "header")?"SI ci e":"NON ci e";
     // std::cout << x << std::endl;
@@ -45,9 +45,9 @@
 } 
 
 
-%typemap(out) octomap::AbstractOcTree* {
+// %typemap(out) octomap::AbstractOcTree* {
     
-}
+// }
 
 
 %include "conversions.h"    

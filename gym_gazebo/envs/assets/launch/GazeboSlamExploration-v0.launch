@@ -35,7 +35,6 @@
     <!-- gazebo model -->
     <node name="$(anon vehicle_spawn)" pkg="gazebo_ros" type="spawn_model" output="screen" args="-sdf -file $(arg sdf) -model $(arg vehicle) -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)"/>
     <!-- frames and transformer launch -->
-    <node pkg="tf" type="static_transform_publisher" name="map_broadcaster" args="0 0 0 0 0 0 1 map base_link 100" />
     <!-- <node pkg="simple_moviment" type="transformer_map_node" name="transformer_map" output="screen" /> -->
     <node pkg="simple_movement" type="transformer.py" name="transformer" output="screen" />
 

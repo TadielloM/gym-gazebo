@@ -55,20 +55,14 @@ if __name__ == '__main__':
         cumulated_reward = 0 #Should going forward give more reward then L/R ?
         
         observation,octomap_resetted = env.reset()
-        while(not octomap_resetted):
-            observation,octomap_resetted = env.reset()
-            
         
         position = observation
-        print("CAZZO 2")
-
         state = None
 
         if qlearn.epsilon > 0.05:
             qlearn.epsilon *= epsilon_discount
 
         #render() #defined above, not env.render()     
-
         for i in range(max_number_of_steps):
 
             # Pick an action based on the current state
